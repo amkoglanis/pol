@@ -1,0 +1,23 @@
+.input_title {
+    font-size: 16px;
+    color: #6B4F3A; /* Çiyan rengi */
+    margin-bottom: 8px;
+    display: block;
+}
+
+.form-control {
+    width: 100%;
+    padding: 10px;
+    border-radius: 12px; /* Yumuşak kenarlar */
+    border: 2px solid #6B4F3A; /* Çiyan rengi */
+    background-color: #F4F1E1; /* Yumuşak, doğal bir arka plan rengi */
+    font-size: 14px;
+    color: #333;
+    transition: border-color 0.3s ease;
+}
+
+.form-control:focus {
+    border-color: #A57C59; /* Daha koyu çiyan rengi, odaklanınca */
+    outline: none;
+    box-shadow: 0 0 5px rgba(165, 124, 89, 0.5);
+}

